@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import Editor, { DiffEditor } from '@monaco-editor/react';
 import { useInspectorStore } from './store';
+import { useRenderStore } from './renderStore';
 
 export default function Inspector() {
   const { artifact, setArtifact, prompt, setPrompt, history } = useInspectorStore();
-  const [activeTab, setActiveTab] = useState<'result' | 'prompt' | 'history'>('result');
+  const { videoUrl, logs } = useRenderStore();
+  const [activeTab, setActiveTab] = useState<'result' | 'prompt' | 'history' | 'logs'>('result');
   const [showDiff, setShowDiff] = useState(false);
   const [draft, setDraft] = useState(artifact.modified);
 
@@ -14,10 +16,19 @@ export default function Inspector() {
 
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      {videoUrl && (
+        <div style={{ padding: '8px', borderBottom: '1px solid #ccc' }}>
+          <video src={videoUrl} controls style={{ width: '100%' }} />
+          <a href={videoUrl} download>
+            Download
+          </a>
+        </div>
+      )}
       <div style={{ display: 'flex', borderBottom: '1px solid #ccc' }}>
         <button onClick={() => setActiveTab('result')}>Result</button>
         <button onClick={() => setActiveTab('prompt')}>Prompt</button>
         <button onClick={() => setActiveTab('history')}>History</button>
+        <button onClick={() => setActiveTab('logs')}>Logs</button>
       </div>
       <div style={{ flex: 1 }}>
         {activeTab === 'result' && (
@@ -79,6 +90,13 @@ export default function Inspector() {
               </li>
             ))}
           </ul>
+        )}
+        {activeTab === 'logs' && (
+          <div style={{ padding: '8px', fontFamily: 'monospace', whiteSpace: 'pre-wrap' }}>
+            {logs.map((line, idx) => (
+              <div key={idx}>{line}</div>
+            ))}
+          </div>
         )}
       </div>
     </div>

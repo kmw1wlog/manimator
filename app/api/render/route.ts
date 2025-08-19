@@ -4,34 +4,64 @@ import DockerManimRunner from '../../../worker/DockerManimRunner';
 import { getPresignedUrl } from '../../../lib/storage';
 
 export async function POST(req: Request) {
-  try {
-    const { code, sceneName = 'MainScene', quality = 'ql', artifactId } = await req.json();
+  const encoder = new TextEncoder();
 
-    let source = code as string | undefined;
-    if (!source && artifactId) {
-      const filePath = path.join(process.cwd(), 'artifacts', `${artifactId}.py`);
-      source = await fs.readFile(filePath, 'utf-8');
-    }
+  const stream = new ReadableStream<Uint8Array>({
+    async start(controller) {
+      const send = (event: string, data: string) => {
+        controller.enqueue(
+          encoder.encode(`event: ${event}\ndata: ${data}\n\n`)
+        );
+      };
 
-    if (!source) {
-      return new Response(
-        JSON.stringify({ error: 'No code provided' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      );
-    }
+      try {
+        const {
+          code,
+          sceneName = 'MainScene',
+          quality = 'ql',
+          artifactId,
+        } = await req.json();
 
-    const { key } = await DockerManimRunner.render({ code: source, sceneName, quality });
-    const url = await getPresignedUrl(key, 'video/mp4', 3600);
+        let source = code as string | undefined;
+        if (!source && artifactId) {
+          const filePath = path.join(process.cwd(), 'artifacts', `${artifactId}.py`);
+          source = await fs.readFile(filePath, 'utf-8');
+        }
 
-    return new Response(
-      JSON.stringify({ videoKey: key, videoUrl: url }),
-      { headers: { 'Content-Type': 'application/json' } }
-    );
-  } catch (error) {
-    console.error('render error', error);
-    return new Response(
-      JSON.stringify({ error: 'Failed to render video' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    );
-  }
+        if (!source) {
+          send('error', 'No code provided');
+          controller.close();
+          return;
+        }
+
+        send('status', 'queued');
+
+        const { key } = await DockerManimRunner.render({
+          code: source,
+          sceneName,
+          quality,
+          onStatus: (s) => send('status', s),
+          onLog: (l) => send('log', l),
+        });
+
+        const url = await getPresignedUrl(key, 'video/mp4', 3600);
+        send('status', 'done');
+        send('result', JSON.stringify({ videoKey: key, videoUrl: url }));
+      } catch (error) {
+        console.error('render error', error);
+        send('error', 'Failed to render video');
+      } finally {
+        controller.close();
+      }
+    },
+  });
+
+  return new Response(stream, {
+    headers: {
+      'Content-Type': 'text/event-stream',
+      Connection: 'keep-alive',
+      'Cache-Control': 'no-cache',
+    },
+  });
 }
+

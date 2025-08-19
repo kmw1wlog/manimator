@@ -13,9 +13,10 @@ const statusColor: Record<NodeStatus, string> = {
 
 interface BaseNodeProps extends NodeProps {
   status?: NodeStatus;
+  children?: React.ReactNode;
 }
 
-const BaseNode: React.FC<BaseNodeProps> = ({ status = 'idle', data }) => {
+const BaseNode: React.FC<BaseNodeProps> = ({ status = 'idle', data, children }) => {
   const { switchTab } = useRightPanel();
 
   const handleToolbarClick = (tab: string) => () => switchTab(tab);
@@ -34,6 +35,7 @@ const BaseNode: React.FC<BaseNodeProps> = ({ status = 'idle', data }) => {
         }}
       />
       {data?.label && <div style={{ marginLeft: 16 }}>{data.label}</div>}
+      {children}
 
       <NodeToolbar isVisible position={Position.Top} style={{ display: 'flex', gap: 4 }}>
         <button onClick={handleToolbarClick('regenerate')}>재생성</button>
