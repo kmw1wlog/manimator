@@ -1,0 +1,41 @@
+{
+  "name": "manimator",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "next": "^14.2.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "reactflow": "^11.10.2",
+    "@xyflow/react": "^12.0.0",
+    "@monaco-editor/react": "^4.5.0",
+    "zod": "^3.23.8",
+    "zustand": "^4.5.2",
+    "axios": "^1.6.8",
+    "@aws-sdk/client-s3": "^3.590.0",
+    "@supabase/storage-js": "^2.5.3",
+    "dockerode": "^4.0.2",
+    "ffmpeg-static": "^5.1.0",
+    "openai": "^4.47.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "@types/react": "^18.2.21",
+    "@types/node": "^20.4.2",
+    "tailwindcss": "^3.4.1",
+    "postcss": "^8.4.31",
+    "autoprefixer": "^10.4.17",
+    "eslint": "^8.56.0",
+    "eslint-config-next": "^14.2.3",
+    "prettier": "^3.2.5",
+    "bullmq": "^5.7.8",
+    "ioredis": "^5.4.1"
+  }
+}
