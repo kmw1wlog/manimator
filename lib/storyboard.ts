@@ -1,8 +1,12 @@
-import { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
 import openai from './openai';
 import { Storyboard, StoryboardSchema } from './types';
 import { uploadBuffer } from './storage';
 import { randomUUID } from 'crypto';
+
+interface ChatMessage {
+  role: string;
+  content: string;
+}
 
 export interface StoryboardOptions {
   tone?: string;
@@ -30,7 +34,7 @@ export async function generateStoryboard({
   user = '',
   data = '',
 }: GenerateStoryboardInput): Promise<{ artifactId: string; json: Storyboard }> {
-  const messages: ChatCompletionMessageParam[] = [];
+  const messages: ChatMessage[] = [];
   if (system) {
     messages.push({ role: 'system', content: system });
   }
