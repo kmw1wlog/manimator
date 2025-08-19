@@ -4,14 +4,17 @@ import { useInspectorStore } from './store';
 import { useRenderStore } from './renderStore';
 
 export default function Inspector() {
-  const { artifact, setArtifact, prompt, setPrompt, history } = useInspectorStore();
+  const { artifact, setArtifact, prompt, setPrompt, history, addHistory } =
+    useInspectorStore();
   const { videoUrl, logs } = useRenderStore();
   const [activeTab, setActiveTab] = useState<'result' | 'prompt' | 'history' | 'logs'>('result');
   const [showDiff, setShowDiff] = useState(false);
   const [draft, setDraft] = useState(artifact.modified);
 
   const saveDraft = () => {
-    setArtifact({ original: artifact.original, modified: draft });
+    const next = { original: artifact.original, modified: draft };
+    setArtifact(next);
+    addHistory({ id: Date.now().toString(), label: 'version ' + history.length, artifact: next });
   };
 
   return (
@@ -82,14 +85,24 @@ export default function Inspector() {
           </div>
         )}
         {activeTab === 'history' && (
-          <ul>
-            {history.map((run) => (
-              <li key={run.id}>
-                {run.label}
-                {/* Placeholder for artifact comparison button */}
-              </li>
-            ))}
-          </ul>
+          <table style={{ width: '100%' }}>
+            <thead>
+              <tr>
+                <th style={{ textAlign: 'left' }}>Version</th>
+                <th style={{ textAlign: 'left' }}>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {history.map((run) => (
+                <tr key={run.id}>
+                  <td>{run.label}</td>
+                  <td>
+                    <button onClick={() => setArtifact(run.artifact)}>Rollback</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         )}
         {activeTab === 'logs' && (
           <div style={{ padding: '8px', fontFamily: 'monospace', whiteSpace: 'pre-wrap' }}>

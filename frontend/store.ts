@@ -23,6 +23,7 @@ interface InspectorState {
   history: NodeRun[];
   setArtifact: (artifact: Artifact) => void;
   setPrompt: (prompt: PromptFields) => void;
+  addHistory: (run: NodeRun) => void;
 }
 
 export const useInspectorStore = create<InspectorState>((set) => ({
@@ -31,4 +32,6 @@ export const useInspectorStore = create<InspectorState>((set) => ({
   history: [],
   setArtifact: (artifact: Artifact) => set({ artifact }),
   setPrompt: (prompt: PromptFields) => set({ prompt }),
+  addHistory: (run: NodeRun) =>
+    set((state) => ({ history: [...state.history, run] })),
 }));
