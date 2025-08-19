@@ -133,6 +133,7 @@ celerybeat.pid
 
 # Environments
 .env
+.env*
 .venv
 env/
 venv/
@@ -173,3 +174,11 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
