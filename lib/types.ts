@@ -40,3 +40,20 @@ export const GraphSchema = z.object({
   edges: z.array(EdgeSchema),
 });
 export type Graph = z.infer<typeof GraphSchema>;
+
+// Storyboard scene schema
+export const SceneSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  start: z.number(),
+  end: z.number(),
+  narration: z.string(),
+  equations: z.array(z.string()),
+  visuals: z.array(z.string()),
+});
+export type Scene = z.infer<typeof SceneSchema>;
+
+export const StoryboardSchema = z.object({
+  scenes: z.array(SceneSchema),
+});
+export type Storyboard = z.infer<typeof StoryboardSchema>;
