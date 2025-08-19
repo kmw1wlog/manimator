@@ -21,7 +21,10 @@ type BaseNodeProps = PropsWithChildren<NodeProps & BaseNodeOwnProps>;
 const BaseNode: React.FC<BaseNodeProps> = ({ status = 'idle', data, children }) => {
   const { switchTab } = useRightPanel();
 
-  const handleToolbarClick = (tab: 'regenerate' | 'edit' | 'history') => () => switchTab(tab);
+  const handleToolbarClick =
+    (tab: 'regenerate' | 'edit' | 'history') =>
+    () =>
+      switchTab(tab);
 
   return (
     <div style={{ position: 'relative', padding: 10 }}>
