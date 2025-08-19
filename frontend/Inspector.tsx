@@ -39,14 +39,14 @@ export default function Inspector() {
                 modified={draft}
                 onChange={(v) => setDraft(v || '')}
                 height="80vh"
-                language="javascript"
+                language="python"
               />
             ) : (
               <Editor
                 value={draft}
                 onChange={(v) => setDraft(v || '')}
                 height="80vh"
-                language="javascript"
+                language="python"
               />
             )}
           </div>
