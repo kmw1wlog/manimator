@@ -1,0 +1,17 @@
+{
+  "name": "manimator-web",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "test": "tsc --noEmit"
+  },
+  "dependencies": {
+    "elkjs": "^0.8.2",
+    "openai": "^4.56.1",
+    "zustand": "^4.5.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}
