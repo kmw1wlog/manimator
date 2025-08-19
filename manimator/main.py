@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, File, UploadFile
+from fastapi import FastAPI, HTTPException, File, UploadFile, Request
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 import re
@@ -9,6 +9,7 @@ from manimator.utils.schema import ManimProcessor
 from manimator.utils.helpers import download_arxiv_pdf
 from manimator.api.animation_generation import generate_animation_response
 from manimator.api.scene_description import process_prompt_scene, process_pdf_prompt
+from manimator.api.ocr import process_ocr
 
 
 load_dotenv()
@@ -32,6 +33,22 @@ app.add_middleware(
 @app.get("/health-check")
 async def health_check():
     return {"status": "ok"}
+
+
+@app.post("/ocr")
+async def ocr_endpoint(request: Request, file: UploadFile | None = File(None)):
+    try:
+        if file is not None:
+            content = await file.read()
+            return process_ocr(file_bytes=content, filename=file.filename)
+        body = (await request.body()).decode("utf-8")
+        if not body:
+            raise HTTPException(status_code=400, detail="Empty request body")
+        return process_ocr(text=body)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.post("/generate-pdf-scene")
