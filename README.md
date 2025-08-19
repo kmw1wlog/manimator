@@ -86,6 +86,18 @@ To change the models being used, you can set the environment variables for the m
 
 To prompt engineer to better suit your use case, you can modify the system prompts in `utils/system_prompts.py` and change the few shot examples in `few_shot/few_shot_prompts.py`.
 
+### 5-Minute Demo
+
+1. **Upload** a PDF of a paper or notes.
+2. The system performs **OCR** and extracts scenes.
+3. Review the generated **storyboard** and adjust prompts if needed.
+4. Generated Manim **code** appears in the editor where it can be edited or saved.
+5. Hit render and view the resulting **video**.
+
+### Deployment
+
+The project can be deployed with the frontend and edge functions on **Vercel** while running the server on **Render** or **Fly.io**. For smaller setups a single VPS can host both pieces. Remember that the API keys from `.env` should only be configured on the server side.
+
 ## 🛳️ Docker
 
 To use manimator with Docker, execute the following commands:

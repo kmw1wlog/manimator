@@ -8,5 +8,5 @@
     "skipLibCheck": true
   },
   "include": ["lib/**/*.ts", "lib/env.d.ts"],
-  "exclude": ["lib/storage/**"]
+  "exclude": ["lib/storage/**/*"]
 }
